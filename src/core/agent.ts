@@ -698,8 +698,12 @@ export class Agent {
 
     const subAgent = await Agent.create(subAgentConfig, this.deps);
     subAgent.lineage = [...this.lineage, this.agentId];
-    const result = await subAgent.complete(config.prompt);
-    return result;
+    try {
+      const result = await subAgent.complete(config.prompt);
+      return result;
+    } finally {
+      await (subAgent as any).sandbox?.dispose?.();
+    }
   }
 
   static async resume(agentId: string, config: AgentConfig, deps: AgentDependencies, opts?: { autoRun?: boolean; strategy?: ResumeStrategy }): Promise<Agent> {

@@ -126,7 +126,8 @@ runner.test('task_run 协调多子代理并结合 todo / 权限 / Hook', async (
   const stage1 = await harness.chatStep({
     label: '阶段1',
     prompt:
-      '请先调用 coordination_probe，且 stage 参数必须是“阶段1-规划”。随后委派分析子代理总结“更新task-run测试”要点，并创建一条 ResumeTask 的 todo。',
+      '请先调用 coordination_probe，且 stage 参数必须是“阶段1-规划”。' +
+      '你的回复中必须原样包含“阶段1”。随后委派分析子代理总结“更新task-run测试”要点，并创建一条 ResumeTask 的 todo。',
     expectation: {
       includes: ['阶段1', 'ResumeTask'],
     },
