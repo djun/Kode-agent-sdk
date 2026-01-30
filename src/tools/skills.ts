@@ -14,15 +14,6 @@ import type { ToolContext } from '../core/types';
 
 /**
  * Skills 工具描述
- *
- * 原始描述（已备份，list操作已临时禁用）:
- * const ORIGINAL_DESCRIPTION = `管理和加载skills。
- *
- * 使用此工具来:
- * - 列出所有可用的skills（获取元数据列表）
- * - 加载特定skill的详细内容（包含指令、references、scripts、assets）
- *
- * Skills是可重用的能力单元，可以扩展Agent的功能。`;
  */
 const DESCRIPTION = `加载特定skill的详细内容。
 
@@ -39,9 +30,7 @@ Skills是可重用的能力单元，可以扩展Agent的功能。`;
  * @returns ToolInstance
  */
 export function createSkillsTool(skillsManager: SkillsManager) {
-  // 临时禁用 list 操作，只保留 load 操作
-  // const actionSchema = z.enum(['list', 'load']).describe('操作类型');
-  const actionSchema = z.enum(['load']).describe('操作类型');
+  const actionSchema = z.enum(['list', 'load']).describe('操作类型');
 
   const skillsTool = tool({
     name: 'skills',
@@ -53,13 +42,13 @@ export function createSkillsTool(skillsManager: SkillsManager) {
     async execute(args, ctx: ToolContext) {
       const { action, skill_name } = args;
 
-      // 注释掉 list 操作的代码
+      // 临时注释 list 操作
       // if (action === 'list') {
-      //   // 列出所有skills
+      //   // 列出所有skills（使用文件夹名称作为标识符）
       //   const skills = await skillsManager.getSkillsMetadata();
       //
       //   const skillsList = skills.map(s => ({
-      //     name: s.name,
+      //     name: s.name,  // 文件夹名称
       //     description: s.description,
       //   }));
       //

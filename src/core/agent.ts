@@ -461,7 +461,14 @@ export class Agent {
         .map((block) => block.text)
         .join('\n');
       if (combined.trim().length > 0) {
-        finalText = combined;
+        // 过滤掉LLM响应中的function_calls标签（某些OpenAI兼容API会返回这些标签）
+        // 这些标签不应该出现在最终响应中
+        const cleanedCombined = combined
+          .replace(/<\/?function_calls>/g, '')
+          .replace(/<function_calls/g, '')
+          .replace(/<function/g, '')
+          .replace(/_calls>/g, '');
+        finalText = cleanedCombined;
       }
     }
 
@@ -1022,7 +1029,14 @@ export class Agent {
           }
         } else if (chunk.type === 'content_block_delta') {
           if (chunk.delta?.type === 'text_delta') {
-            const text = chunk.delta.text ?? '';
+            let text = chunk.delta.text ?? '';
+            // 过滤掉LLM响应中的function_calls标签（某些OpenAI兼容API会返回这些标签）
+            // 这些标签不应该出现在最终响应中
+            text = text.replace(/<\/?function_calls>/g, '');
+            text = text.replace(/<function_calls/g, '');
+            // 移除可能被分块的标签部分
+            text = text.replace(/<function/g, '');
+            text = text.replace(/_calls>/g, '');
             const existing = textBuffers.get(currentBlockIndex) ?? '';
             textBuffers.set(currentBlockIndex, existing + text);
             if (assistantBlocks[currentBlockIndex]?.type === 'text') {
